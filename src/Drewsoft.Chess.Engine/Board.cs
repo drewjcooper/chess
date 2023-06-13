@@ -1,6 +1,9 @@
-﻿namespace Drewsoft.Chess.Engine;
+﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
-public class Board
+namespace Drewsoft.Chess.Engine;
+
+public class Board : IEnumerable<char>
 {
     private readonly Dictionary<string, string> _pieces = new();
 
@@ -25,5 +28,20 @@ public class Board
         _pieces["e8"] = "k";
     }
 
-    public string? this[string reference] => _pieces.GetValueOrDefault(reference, "-");
+    public string this[string reference] => _pieces.GetValueOrDefault(reference, "-");
+    public char this[int index] => this[ToReference(index)][0];
+
+    private string ToReference(int index) => $"{"abcdefgh"[index % 8]}{8 - index / 8}";
+
+    public static bool TryParse(string candidate, [NotNullWhen(true)] out Board? board)
+    {
+        board = new Board();
+        return true;
+    }
+
+    public IEnumerator<char> GetEnumerator() => Enumerable.Range(0, 64).Select(x => this[x]).GetEnumerator();
+
+    public override string ToString() => "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
