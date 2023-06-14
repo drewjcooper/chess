@@ -26,7 +26,7 @@ public class BoardTests
     }
 
     [Theory]
-    [MemberData(nameof(BoardTestData.TryParseFenPositiveCases), MemberType = typeof(BoardTestData))]
+    [MemberData(nameof(BoardTestData.TryParseXFenPositiveCases), MemberType = typeof(BoardTestData))]
     public void Board_TryParse_CandidateValid_ReturnsTrueAndOutputsExpectedBoard(
         string candidate,
         string expectedSquares)
@@ -34,7 +34,7 @@ public class BoardTests
         var result = Board.TryParse(candidate, out var sut);
 
         result.Should().BeTrue();
-        sut.Should().BeEquivalentTo(expectedSquares);
+        sut.Should().BeEquivalentTo(expectedSquares, opts => opts.WithStrictOrdering());
     }
 
     [Theory]
