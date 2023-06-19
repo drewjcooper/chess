@@ -1,11 +1,15 @@
-﻿namespace Drewsoft.Chess.Engine;
+﻿using System.Collections;
 
-public class Board
+namespace Drewsoft.Chess.Engine;
+
+public class Board : IEnumerable<char>
 {
-    private readonly Dictionary<string, string> _pieces = new();
+    private readonly Dictionary<string, string> _pieces;
 
     public Board()
     {
+        _pieces = new();
+
         for (char file = 'a'; file <= 'h'; file++)
         {
             _pieces[$"{file}2"] = "P";
@@ -25,5 +29,28 @@ public class Board
         _pieces["e8"] = "k";
     }
 
+    public Board(Dictionary<string, string> pieces)
+    {
+        _pieces = pieces;
+    }
+
     public string? this[string reference] => _pieces.GetValueOrDefault(reference, "-");
+    public char this[int index] => this[ToReference(index)][0];
+
+    private string ToReference(int index) => $"{"abcdefgh"[index % 8]}{8 - index / 8}";
+
+    public IEnumerator<char> GetEnumerator() => Enumerable.Range(0, 64).Select(x => this[x]).GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public Board Move(string move)
+    {
+        var (from, to) = (move[..2], move[2..]);
+
+        return new Board(
+            _pieces
+                .Where(kv => kv.Key != from)
+                .Append(new(to, _pieces[from]))
+                .ToDictionary(kv => kv.Key, kv => kv.Value));
+    }
 }
