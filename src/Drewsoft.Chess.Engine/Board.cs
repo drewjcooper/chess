@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 
+using Drewsoft.Chess.Engine.Exceptions;
+
 namespace Drewsoft.Chess.Engine;
 
 public class Board : IEnumerable<char>
@@ -29,17 +31,17 @@ public class Board : IEnumerable<char>
         _pieces["e8"] = "k";
     }
 
-    public Board(Dictionary<string, string> pieces)
+    public Board(IEnumerable<KeyValuePair<string, string>> pieces)
     {
-        _pieces = pieces;
+        _pieces = new(pieces);
     }
 
-    public string? this[string reference] => _pieces.GetValueOrDefault(reference, "-");
-    public char this[int index] => this[ToReference(index)][0];
+    public string? this[string reference] => _pieces.GetValueOrDefault(reference);
+    public char? this[int index] => this[ToReference(index)]?[0];
 
     private string ToReference(int index) => $"{"abcdefgh"[index % 8]}{8 - index / 8}";
 
-    public IEnumerator<char> GetEnumerator() => Enumerable.Range(0, 64).Select(x => this[x]).GetEnumerator();
+    public IEnumerator<char> GetEnumerator() => Enumerable.Range(0, 64).Select(x => this[x] ?? '-').GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -47,10 +49,13 @@ public class Board : IEnumerable<char>
     {
         var (from, to) = (move[..2], move[2..]);
 
-        return new Board(
-            _pieces
-                .Where(kv => kv.Key != from)
-                .Append(new(to, _pieces[from]))
-                .ToDictionary(kv => kv.Key, kv => kv.Value));
+        var piece = this[from] ?? throw new PieceNotFoundException(from);
+
+        return char.IsUpper(piece[0])
+            ? new Board(
+                _pieces
+                    .Where(kv => kv.Key != from)
+                    .Append(new(to, piece)))
+            : throw new OpposingPieceException(from);
     }
 }

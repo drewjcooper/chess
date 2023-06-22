@@ -171,4 +171,32 @@ public static class BoardTestData
                 "RNBQKB-R"
             }
         };
+
+    public static TheoryData<string> StandardChessInitialEmptyPositions()
+    {
+        var data = new TheoryData<string>();
+
+        for (char file = 'a'; file <= 'h'; file++)
+        {
+            for (int rank = 3; rank <= 6; rank++)
+            {
+                data.Add($"{file}{rank}");
+            }
+        }
+
+        return data;
+    }
+
+    public static TheoryData<string> StandardChessInitialOpposingPositions()
+    {
+        var data = new TheoryData<string>();
+
+        for (char file = 'a'; file <= 'h'; file++)
+        {
+            data.Add($"{file}7");
+            data.Add($"{file}8");
+        }
+
+        return data;
+    }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Drewsoft.Chess.Engine;
 
-internal class DefaultChessGameTestData : TheoryData<string, string>
+internal class DefaultChessGameTestData : TheoryData<string, string?>
 {
     public DefaultChessGameTestData()
     {
@@ -40,7 +40,7 @@ internal class DefaultChessGameTestData : TheoryData<string, string>
         {
             for (char file = 'a'; file <= 'h'; file++)
             {
-                Add($"{file}{rank}", "-");
+                Add($"{file}{rank}", null);
             }
         }
     }
