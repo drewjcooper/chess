@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Text.RegularExpressions;
 
 using Drewsoft.Chess.Engine.Exceptions;
 
@@ -47,6 +48,12 @@ public class Board : IEnumerable<char>
 
     public Board Move(string move)
     {
+        move = move.ToLower();
+        if (!Regex.IsMatch(move, "^([a-h][1-8]){2}$"))
+        {
+            throw new InvalidMoveException(move);
+        }
+
         var (from, to) = (move[..2], move[2..]);
 
         var piece = this[from] ?? throw new PieceNotFoundException(from);

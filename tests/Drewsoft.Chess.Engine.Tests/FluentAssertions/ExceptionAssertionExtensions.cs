@@ -7,8 +7,8 @@ namespace FluentAssertions;
 
 internal static class ExceptionAssertionExtensions
 {
-    internal static ExceptionAssertions<InvalidMoveException> WithMove(
-        this ExceptionAssertions<InvalidMoveException> assertion,
+    internal static ExceptionAssertions<IllegalMoveException> WithMove(
+        this ExceptionAssertions<IllegalMoveException> assertion,
         string expected,
         string? because = null,
         params string[] becauseArgs)

@@ -5,8 +5,5 @@ public class InvalidMoveException : ChessException
     public InvalidMoveException(string move)
         : base($"'{move}' is not a valid move.")
     {
-        Move = move;
     }
-
-    public string Move { get; }
 }
