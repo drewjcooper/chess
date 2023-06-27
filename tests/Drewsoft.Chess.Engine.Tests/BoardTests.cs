@@ -113,6 +113,7 @@ public class BoardTests
     [InlineData("a1b1")]
     [InlineData("b1b3")]
     [InlineData("b1d2")]
+    [InlineData("b1d3")]
     [InlineData("c1b2")]
     [InlineData("c1f4")]
     [InlineData("d1c2")]
