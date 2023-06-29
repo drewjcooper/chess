@@ -1,6 +1,6 @@
 ﻿namespace Drewsoft.Chess.Engine;
 
-internal class DefaultChessGameTestData : TheoryData<string, string?>
+internal class DefaultChessGameTestData : TheoryData<string, char?>
 {
     public DefaultChessGameTestData()
     {
@@ -13,21 +13,21 @@ internal class DefaultChessGameTestData : TheoryData<string, string?>
 
     private void AddRearPieces(char rank, Colour colour)
     {
-        AddPiece('a', "R");
-        AddPiece('b', "N");
-        AddPiece('c', "B");
-        AddPiece('d', "Q");
-        AddPiece('e', "K");
-        AddPiece('f', "B");
-        AddPiece('g', "N");
-        AddPiece('h', "R");
+        AddPiece('a', 'R');
+        AddPiece('b', 'N');
+        AddPiece('c', 'B');
+        AddPiece('d', 'Q');
+        AddPiece('e', 'K');
+        AddPiece('f', 'B');
+        AddPiece('g', 'N');
+        AddPiece('h', 'R');
 
-        void AddPiece(char file, string name) => Add($"{file}{rank}", colour == Colour.White ? name : name.ToLower());
+        void AddPiece(char file, char name) => Add($"{file}{rank}", colour == Colour.White ? name : char.ToLower(name));
     }
 
     private void AddPawns(char rank, Colour colour)
     {
-        var piece = colour == Colour.White ? "P" : "p";
+        var piece = colour == Colour.White ? 'P' : 'p';
         for (char file = 'a'; file <= 'h'; file++)
         {
             Add($"{file}{rank}", piece);

@@ -38,4 +38,29 @@ public class ReferenceTests
 
         result.Should().Be(expected);
     }
+
+    [Theory]
+    [InlineData("a8")]
+    [InlineData("a7")]
+    [InlineData("a6")]
+    [InlineData("a5")]
+    [InlineData("a4")]
+    [InlineData("a3")]
+    [InlineData("a2")]
+    [InlineData("a1")]
+    [InlineData("b1")]
+    [InlineData("c1")]
+    [InlineData("d1")]
+    [InlineData("e1")]
+    [InlineData("f1")]
+    [InlineData("g1")]
+    [InlineData("h1")]
+    public void ToString_AfterParse_ReturnsInitialString(string candidate)
+    {
+        var sut = Reference.Parse(candidate);
+
+        var result = sut.ToString();
+
+        result.Should().Be(candidate);
+    }
 }

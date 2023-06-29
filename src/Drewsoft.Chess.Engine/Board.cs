@@ -7,7 +7,7 @@ namespace Drewsoft.Chess.Engine;
 
 public class Board : IEnumerable<char>
 {
-    private readonly Dictionary<string, string> _pieces;
+    private readonly Dictionary<Reference, char> _pieces;
 
     public Board()
     {
@@ -15,34 +15,33 @@ public class Board : IEnumerable<char>
 
         for (char file = 'a'; file <= 'h'; file++)
         {
-            _pieces[$"{file}2"] = "P";
-            _pieces[$"{file}7"] = "p";
+            _pieces[Reference.Parse($"{file}2")] = 'P';
+            _pieces[Reference.Parse($"{file}7")] = 'p';
         }
 
-        _pieces["a1"] = _pieces["h1"] = "R";
-        _pieces["b1"] = _pieces["g1"] = "N";
-        _pieces["c1"] = _pieces["f1"] = "B";
-        _pieces["d1"] = "Q";
-        _pieces["e1"] = "K";
+        _pieces[Reference.Parse("a1")] = _pieces[Reference.Parse("h1")] = 'R';
+        _pieces[Reference.Parse("b1")] = _pieces[Reference.Parse("g1")] = 'N';
+        _pieces[Reference.Parse("c1")] = _pieces[Reference.Parse("f1")] = 'B';
+        _pieces[Reference.Parse("d1")] = 'Q';
+        _pieces[Reference.Parse("e1")] = 'K';
 
-        _pieces["a8"] = _pieces["h8"] = "r";
-        _pieces["b8"] = _pieces["g8"] = "n";
-        _pieces["c8"] = _pieces["f8"] = "b";
-        _pieces["d8"] = "q";
-        _pieces["e8"] = "k";
+        _pieces[Reference.Parse("a8")] = _pieces[Reference.Parse("h8")] = 'r';
+        _pieces[Reference.Parse("b8")] = _pieces[Reference.Parse("g8")] = 'n';
+        _pieces[Reference.Parse("c8")] = _pieces[Reference.Parse("f8")] = 'b';
+        _pieces[Reference.Parse("d8")] = 'q';
+        _pieces[Reference.Parse("e8")] = 'k';
     }
 
-    public Board(IEnumerable<KeyValuePair<string, string>> pieces)
+    public Board(IEnumerable<KeyValuePair<Reference, char>> pieces)
     {
         _pieces = new(pieces);
     }
 
-    public string? this[string reference] => _pieces.GetValueOrDefault(reference);
-    public char? this[int index] => this[ToReference(index)]?[0];
+    public char? this[Reference reference] => _pieces.TryGetValue(reference, out var piece) ? piece : null;
+    private char? this[int index] => this[new Reference(index)];
 
-    private string ToReference(int index) => $"{"abcdefgh"[index % 8]}{8 - index / 8}";
-
-    public IEnumerator<char> GetEnumerator() => Enumerable.Range(0, 64).Select(x => this[x] ?? '-').GetEnumerator();
+    public IEnumerator<char> GetEnumerator()
+        => Enumerable.Range(0, 64).Select(x => this[x] ?? '-').GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -54,11 +53,11 @@ public class Board : IEnumerable<char>
             throw new InvalidMoveException(move);
         }
 
-        var (from, to) = (move[..2], move[2..]);
+        var (from, to) = (Reference.Parse(move[..2]), Reference.Parse(move[2..]));
 
         var piece = this[from] ?? throw new PieceNotFoundException(from);
 
-        return char.IsUpper(piece[0])
+        return char.IsUpper(piece)
             ? new Board(
                 _pieces
                     .Where(kv => kv.Key != from)

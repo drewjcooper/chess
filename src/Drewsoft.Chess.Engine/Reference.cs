@@ -22,7 +22,7 @@ public readonly struct Reference
         return default;
     }
 
-    public override string ToString() => $"{"abcdefgh"[_value % 8]}{8 - _value % 8}";
+    public override string ToString() => $"{"abcdefgh"[_value % 8]}{8 - _value / 8}";
 
     public static implicit operator string(Reference reference) => reference.ToString();
 }
