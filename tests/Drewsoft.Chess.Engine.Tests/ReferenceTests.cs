@@ -15,6 +15,44 @@ public class ReferenceTests
     }
 
     [Theory]
+    [InlineData(int.MinValue)]
+    [InlineData(-1)]
+    [InlineData(64)]
+    [InlineData(int.MaxValue)]
+    public void Ctor_ValueInvalid_ThrowsArgumentOutOfRangeException(int value)
+    {
+        Action action = () => new Reference(value);
+
+        action.Should().Throw<ArgumentOutOfRangeException>().WithParameterName("value");
+    }
+
+    [Theory]
+    [InlineData('a', 1, "a1")]
+    [InlineData('a', 8, "a8")]
+    [InlineData('h', 1, "h1")]
+    [InlineData('h', 8, "h8")]
+    [InlineData('d', 4, "d4")]
+    public void Ctor_FileAndRankValid_CreatesExpectedReference(char file, int rank, string expected)
+    {
+        var sut = new Reference(file, rank);
+
+        sut.ToString().Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData('@', 1, "file")]
+    [InlineData('i', 8, "file")]
+    [InlineData('a', 0, "rank")]
+    [InlineData('h', 9, "rank")]
+    [InlineData('z', 20, "file")]
+    public void Ctor_FileOrRankInvalid_ThrowsArgumentOutOfRangeException(char file, int rank, string parameterName)
+    {
+        Action action = () => new Reference(file, rank);
+
+        action.Should().Throw<ArgumentOutOfRangeException>().WithParameterName(parameterName);
+    }
+
+    [Theory]
     [InlineData("a8", 0)]
     [InlineData("a7", 8)]
     [InlineData("a6", 16)]
@@ -37,6 +75,31 @@ public class ReferenceTests
         var result = Reference.Parse(candidate);
 
         result.Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData("a1-")]
+    [InlineData("a")]
+    [InlineData("1")]
+    public void Parse_CandidateInvalidLength_ThrowsArgumentException(string candidate)
+    {
+        Action action = () => Reference.Parse(candidate);
+
+        action.Should().Throw<ArgumentException>().WithParameterName("candidate")
+            .WithMessage("The value must be 2 characters in length.*");
+    }
+
+    [Theory]
+    [InlineData("`1", "file")]
+    [InlineData("i8", "file")]
+    [InlineData("a0", "rank")]
+    [InlineData("h9", "rank")]
+    [InlineData("z9", "file")]
+    public void Parse_CandidateInvalidValue_ThrowsArgumentException(string candidate, string parameterName)
+    {
+        Action action = () => Reference.Parse(candidate);
+
+        action.Should().Throw<ArgumentException>().WithParameterName(parameterName);
     }
 
     [Theory]

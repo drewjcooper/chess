@@ -1,6 +1,6 @@
 ﻿namespace Drewsoft.Chess.Engine;
 
-internal class DefaultChessGameTestData : TheoryData<string, char?>
+internal class DefaultChessGameTestData : TheoryData<Reference, char?>
 {
     public DefaultChessGameTestData()
     {
@@ -22,7 +22,7 @@ internal class DefaultChessGameTestData : TheoryData<string, char?>
         AddPiece('g', 'N');
         AddPiece('h', 'R');
 
-        void AddPiece(char file, char name) => Add($"{file}{rank}", colour == Colour.White ? name : char.ToLower(name));
+        void AddPiece(char file, char name) => Add(Reference.Parse($"{file}{rank}"), colour == Colour.White ? name : char.ToLower(name));
     }
 
     private void AddPawns(char rank, Colour colour)
@@ -30,7 +30,7 @@ internal class DefaultChessGameTestData : TheoryData<string, char?>
         var piece = colour == Colour.White ? 'P' : 'p';
         for (char file = 'a'; file <= 'h'; file++)
         {
-            Add($"{file}{rank}", piece);
+            Add(Reference.Parse($"{file}{rank}"), piece);
         }
     }
 
@@ -40,7 +40,7 @@ internal class DefaultChessGameTestData : TheoryData<string, char?>
         {
             for (char file = 'a'; file <= 'h'; file++)
             {
-                Add($"{file}{rank}", null);
+                Add(Reference.Parse($"{file}{rank}"), null);
             }
         }
     }

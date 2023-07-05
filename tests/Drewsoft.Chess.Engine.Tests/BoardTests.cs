@@ -9,7 +9,7 @@ public class BoardTests
 {
     [Theory]
     [ClassData(typeof(DefaultChessGameTestData))]
-    public void Board_Ctor_Parameterless_InitialisesDefaultGame(string reference, char? expected)
+    public void Board_Ctor_Parameterless_InitialisesDefaultGame(Reference reference, char? expected)
     {
         var sut = new Board();
 
