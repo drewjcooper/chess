@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Text.RegularExpressions;
 
 using Drewsoft.Chess.Engine.Exceptions;
 
@@ -45,23 +44,17 @@ public class Board : IEnumerable<char>
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public Board Move(string move)
+    public Board MakeMove(string candidate)
     {
-        move = move.ToLower();
-        if (!Regex.IsMatch(move, "^([a-h][1-8]){2}$"))
-        {
-            throw new InvalidMoveException(move);
-        }
+        var move = Move.Parse(candidate);
 
-        var (from, to) = (Reference.Parse(move[..2]), Reference.Parse(move[2..]));
-
-        var piece = this[from] ?? throw new PieceNotFoundException(from);
+        var piece = this[move.From] ?? throw new PieceNotFoundException(move.From);
 
         return char.IsUpper(piece)
             ? new Board(
                 _pieces
-                    .Where(kv => kv.Key != from)
-                    .Append(new(to, piece)))
-            : throw new OpposingPieceException(from);
+                    .Where(kv => kv.Key != move.From)
+                    .Append(new(move.To, piece)))
+            : throw new OpposingPieceException(move.From);
     }
 }

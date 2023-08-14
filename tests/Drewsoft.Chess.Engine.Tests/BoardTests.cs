@@ -32,9 +32,9 @@ public class BoardTests
     {
         var sut = new Board();
 
-        var action = () => sut.Move(invalid);
+        var action = () => sut.MakeMove(invalid);
 
-        action.Should().Throw<InvalidMoveException>().WithMessage($"'{invalid}' is not a valid move.");
+        action.Should().Throw<InvalidMoveException>().WithMessage($"'{invalid}' is not a valid move.*");
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public class BoardTests
     {
         var sut = new Board();
 
-        var result = sut.Move("a2a4");
+        var result = sut.MakeMove("a2a4");
 
         result.Should().NotBeSameAs(sut);
     }
@@ -65,7 +65,7 @@ public class BoardTests
             "P-PPPPPP" +
             "RNBQKBNR";
 
-        var result = sut.Move(move);
+        var result = sut.MakeMove(move);
 
         result.Should().BeEquivalentTo(expected);
     }
@@ -76,7 +76,7 @@ public class BoardTests
     {
         var sut = new Board();
 
-        var result = sut.Move(move);
+        var result = sut.MakeMove(move);
 
         result.Should().BeEquivalentTo(expectedBoard, opts => opts.WithStrictOrdering());
     }
@@ -88,7 +88,7 @@ public class BoardTests
         var sut = new Board();
         var move = $"{emptyPosition}h8";
 
-        var action = () => sut.Move(move);
+        var action = () => sut.MakeMove(move);
 
         action.Should().Throw<PieceNotFoundException>().WithPosition(emptyPosition);
     }
@@ -100,7 +100,7 @@ public class BoardTests
         var sut = new Board();
         var move = $"{opposingPosition}e5";
 
-        var action = () => sut.Move(move);
+        var action = () => sut.MakeMove(move);
 
         action.Should().Throw<OpposingPieceException>().WithPosition(opposingPosition);
     }
@@ -129,7 +129,7 @@ public class BoardTests
     {
         var sut = new Board();
 
-        var action = () => sut.Move(illegalMove);
+        var action = () => sut.MakeMove(illegalMove);
 
         action.Should().Throw<IllegalMoveException>().WithMove(illegalMove);
     }

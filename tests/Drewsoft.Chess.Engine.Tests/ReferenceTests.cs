@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using Drewsoft.Chess.Engine.Exceptions;
+
+using FluentAssertions;
 
 namespace Drewsoft.Chess.Engine;
 
@@ -21,7 +23,7 @@ public class ReferenceTests
     [InlineData(int.MaxValue)]
     public void Ctor_ValueInvalid_ThrowsArgumentOutOfRangeException(int value)
     {
-        Action action = () => new Reference(value);
+        var action = () => _ = new Reference(value);
 
         action.Should().Throw<ArgumentOutOfRangeException>().WithParameterName("value");
     }
@@ -40,16 +42,16 @@ public class ReferenceTests
     }
 
     [Theory]
-    [InlineData('@', 1, "file")]
-    [InlineData('i', 8, "file")]
-    [InlineData('a', 0, "rank")]
-    [InlineData('h', 9, "rank")]
-    [InlineData('z', 20, "file")]
-    public void Ctor_FileOrRankInvalid_ThrowsArgumentOutOfRangeException(char file, int rank, string parameterName)
+    [InlineData('@', 1)]
+    [InlineData('i', 8)]
+    [InlineData('a', 0)]
+    [InlineData('h', 9)]
+    [InlineData('z', 20)]
+    public void Ctor_FileOrRankInvalid_ThrowsInvalidReferenceException(char file, int rank)
     {
-        Action action = () => new Reference(file, rank);
+        Action action = () => _ = new Reference(file, rank);
 
-        action.Should().Throw<ArgumentOutOfRangeException>().WithParameterName(parameterName);
+        action.Should().Throw<InvalidReferenceException>();
     }
 
     [Theory]
@@ -85,45 +87,45 @@ public class ReferenceTests
     {
         Action action = () => Reference.Parse(candidate);
 
-        action.Should().Throw<ArgumentException>().WithParameterName("candidate")
-            .WithMessage("The value must be 2 characters in length.*");
+        action.Should().Throw<InvalidReferenceException>().WithReference(candidate)
+            .WithMessage("* is not a valid reference. The value must be 2 characters in length.");
     }
 
     [Theory]
-    [InlineData("`1", "file")]
-    [InlineData("i8", "file")]
-    [InlineData("a0", "rank")]
-    [InlineData("h9", "rank")]
-    [InlineData("z9", "file")]
-    public void Parse_CandidateInvalidValue_ThrowsArgumentException(string candidate, string parameterName)
+    [InlineData("`1")]
+    [InlineData("i8")]
+    [InlineData("a0")]
+    [InlineData("h9")]
+    [InlineData("z9")]
+    public void Parse_CandidateInvalidValue_ThrowsInvalidReferenceException(string candidate)
     {
         Action action = () => Reference.Parse(candidate);
 
-        action.Should().Throw<ArgumentException>().WithParameterName(parameterName);
+        action.Should().Throw<InvalidReferenceException>().WithReference(candidate);
     }
 
     [Theory]
     [InlineData("a8")]
     [InlineData("a7")]
-    [InlineData("a6")]
+    [InlineData("A6")]
     [InlineData("a5")]
     [InlineData("a4")]
     [InlineData("a3")]
     [InlineData("a2")]
     [InlineData("a1")]
-    [InlineData("b1")]
+    [InlineData("B1")]
     [InlineData("c1")]
     [InlineData("d1")]
-    [InlineData("e1")]
+    [InlineData("E1")]
     [InlineData("f1")]
-    [InlineData("g1")]
+    [InlineData("G1")]
     [InlineData("h1")]
-    public void ToString_AfterParse_ReturnsInitialString(string candidate)
+    public void ToString_AfterParse_ReturnsInitialStringLowered(string candidate)
     {
         var sut = Reference.Parse(candidate);
 
         var result = sut.ToString();
 
-        result.Should().Be(candidate);
+        result.Should().Be(candidate.ToLower());
     }
 }

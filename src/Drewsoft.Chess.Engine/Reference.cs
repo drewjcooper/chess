@@ -1,4 +1,6 @@
-﻿namespace Drewsoft.Chess.Engine;
+﻿using Drewsoft.Chess.Engine.Exceptions;
+
+namespace Drewsoft.Chess.Engine;
 
 public readonly struct Reference
 {
@@ -13,8 +15,10 @@ public readonly struct Reference
 
     public Reference(char file, int rank)
     {
-        if (file < 'a' || file > 'h') { throw new ArgumentOutOfRangeException(nameof(file)); }
-        if (rank < 1 || rank > 8) { throw new ArgumentOutOfRangeException(nameof(rank)); }
+        file = char.ToLower(file);
+
+        if (file < 'a' || file > 'h') { throw new InvalidReferenceException("The file is invalid", $"{file}{rank}"); }
+        if (rank < 1 || rank > 8) { throw new InvalidReferenceException("The rank is invalid", $"{file}{rank}"); }
 
         _value = 8 * (8 - rank) + file - 'a';
     }
@@ -22,7 +26,7 @@ public readonly struct Reference
     public static Reference Parse(string candidate)
         => candidate.Length == 2
             ? new(candidate[0], candidate[1] - '0')
-            : throw new ArgumentException("The value must be 2 characters in length.", nameof(candidate));
+            : throw new InvalidReferenceException("The value must be 2 characters in length.", candidate);
 
     public override string ToString() => $"{"abcdefgh"[_value % 8]}{8 - _value / 8}";
 
