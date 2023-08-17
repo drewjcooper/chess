@@ -22,7 +22,8 @@ internal class DefaultChessGameTestData : TheoryData<Reference, char?>
         AddPiece('g', 'N');
         AddPiece('h', 'R');
 
-        void AddPiece(char file, char name) => Add(Reference.Parse($"{file}{rank}"), colour == Colour.White ? name : char.ToLower(name));
+        void AddPiece(char file, char name)
+            => Add(Reference.Parse($"{file}{rank}"), colour == Colour.White ? name : char.ToLower(name));
     }
 
     private void AddPawns(char rank, Colour colour)

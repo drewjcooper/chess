@@ -15,7 +15,7 @@ public class BoardTests
 
         var result = sut[Reference.Parse(reference)];
 
-        result.Should().Be(expected);
+        result?.Display.Should().Be(expected ?? '-');
     }
 
     [Theory]
@@ -106,25 +106,25 @@ public class BoardTests
     }
 
     [Theory]
-    [InlineData("a2a5")]
-    [InlineData("a2b3")]
-    [InlineData("a1a2")]
-    [InlineData("a1a5")]
-    [InlineData("a1b1")]
-    [InlineData("b1b3")]
-    [InlineData("b1d2")]
-    [InlineData("b1d3")]
-    [InlineData("c1b2")]
-    [InlineData("c1f4")]
-    [InlineData("d1c2")]
-    [InlineData("d1d2")]
-    [InlineData("d1e2")]
-    [InlineData("d1d5")]
-    [InlineData("e1d2")]
-    [InlineData("e1e2")]
-    [InlineData("e1f2")]
-    [InlineData("e1c1")]
-    [InlineData("e1g1")]
+    [InlineData("a2a5")]  // Pawn forward 3
+    [InlineData("a2b3")]  // Pawn diagonal
+    [InlineData("a1a2")]  // Rook to pawn
+    [InlineData("a1a5")]  // Rook through pawn
+    [InlineData("a1b1")]  // Rook to knight
+    [InlineData("b1b3")]  // Knight forward 2
+    [InlineData("b1d2")]  // Knight to pawn
+    [InlineData("b1d3")]  // Knight diagonal 2
+    [InlineData("c1b2")]  // Bishop to pawn
+    [InlineData("c1f4")]  // Bishop through pawn
+    [InlineData("d1c2")]  // Queen to pawn
+    [InlineData("d1d2")]  // Queen to pawn
+    [InlineData("d1e2")]  // Queen to pawn
+    [InlineData("d1d5")]  // Queen through pawn
+    [InlineData("e1d2")]  // King to pawn
+    [InlineData("e1e2")]  // King to pawn
+    [InlineData("e1f2")]  // King to pawn
+    [InlineData("e1c1")]  // Queen-side castle
+    [InlineData("e1g1")]  // King-side castle
     public void Board_Move_InitialPosition_IllegalMove_ThrowsIllegalMoveException(string illegalMove)
     {
         var sut = new Board();

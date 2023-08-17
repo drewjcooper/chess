@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 
 using Drewsoft.Chess.Engine.Exceptions;
+using Drewsoft.Chess.Engine.Pieces;
 
 namespace Drewsoft.Chess.Engine;
 
 public class Board : IEnumerable<char>
 {
-    private readonly Dictionary<Reference, char> _pieces;
+    private readonly Dictionary<Reference, Piece> _pieces;
 
     public Board()
     {
@@ -14,33 +15,33 @@ public class Board : IEnumerable<char>
 
         for (char file = 'a'; file <= 'h'; file++)
         {
-            _pieces[Reference.Parse($"{file}2")] = 'P';
-            _pieces[Reference.Parse($"{file}7")] = 'p';
+            _pieces[Reference.Parse($"{file}2")] = Pawn.CreateWhite();
+            _pieces[Reference.Parse($"{file}7")] = Pawn.CreateBlack();
         }
 
-        _pieces[Reference.Parse("a1")] = _pieces[Reference.Parse("h1")] = 'R';
-        _pieces[Reference.Parse("b1")] = _pieces[Reference.Parse("g1")] = 'N';
-        _pieces[Reference.Parse("c1")] = _pieces[Reference.Parse("f1")] = 'B';
-        _pieces[Reference.Parse("d1")] = 'Q';
-        _pieces[Reference.Parse("e1")] = 'K';
+        _pieces[Reference.Parse("a1")] = _pieces[Reference.Parse("h1")] = Rook.CreateWhite();
+        _pieces[Reference.Parse("b1")] = _pieces[Reference.Parse("g1")] = Knight.CreateWhite();
+        _pieces[Reference.Parse("c1")] = _pieces[Reference.Parse("f1")] = Bishop.CreateWhite();
+        _pieces[Reference.Parse("d1")] = Queen.CreateWhite();
+        _pieces[Reference.Parse("e1")] = King.CreateWhite();
 
-        _pieces[Reference.Parse("a8")] = _pieces[Reference.Parse("h8")] = 'r';
-        _pieces[Reference.Parse("b8")] = _pieces[Reference.Parse("g8")] = 'n';
-        _pieces[Reference.Parse("c8")] = _pieces[Reference.Parse("f8")] = 'b';
-        _pieces[Reference.Parse("d8")] = 'q';
-        _pieces[Reference.Parse("e8")] = 'k';
+        _pieces[Reference.Parse("a8")] = _pieces[Reference.Parse("h8")] = Rook.CreateBlack();
+        _pieces[Reference.Parse("b8")] = _pieces[Reference.Parse("g8")] = Knight.CreateBlack();
+        _pieces[Reference.Parse("c8")] = _pieces[Reference.Parse("f8")] = Bishop.CreateBlack();
+        _pieces[Reference.Parse("d8")] = Queen.CreateBlack();
+        _pieces[Reference.Parse("e8")] = King.CreateBlack();
     }
 
-    public Board(IEnumerable<KeyValuePair<Reference, char>> pieces)
+    internal Board(IEnumerable<KeyValuePair<Reference, Piece>> pieces)
     {
         _pieces = new(pieces);
     }
 
-    public char? this[Reference reference] => _pieces.TryGetValue(reference, out var piece) ? piece : null;
-    private char? this[int index] => this[new Reference(index)];
+    public Piece? this[Reference reference] => _pieces.TryGetValue(reference, out var piece) ? piece : null;
+    private Piece? this[int index] => this[new Reference(index)];
 
     public IEnumerator<char> GetEnumerator()
-        => Enumerable.Range(0, 64).Select(x => this[x] ?? '-').GetEnumerator();
+        => Enumerable.Range(0, 64).Select(x => this[x]?.Display ?? '-').GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -50,7 +51,7 @@ public class Board : IEnumerable<char>
 
         var piece = this[move.From] ?? throw new PieceNotFoundException(move.From);
 
-        return char.IsUpper(piece)
+        return piece.Colour == Colour.White
             ? new Board(
                 _pieces
                     .Where(kv => kv.Key != move.From)
