@@ -10,6 +10,8 @@ public abstract class Piece
 
     public Colour Colour { get; }
     public char Display { get; }
+
+    internal abstract IEnumerable<PotentialMove> GetPotentialMoves(Reference from, Board board);
 }
 
 internal class Pawn : Piece
@@ -21,6 +23,11 @@ internal class Pawn : Piece
 
     public static Pawn CreateWhite() => new(Colour.White);
     public static Pawn CreateBlack() => new(Colour.Black);
+
+    internal override IEnumerable<PotentialMove> GetPotentialMoves(Reference from, Board board)
+    {
+        yield break;
+    }
 }
 
 internal class Rook : Piece
@@ -32,6 +39,11 @@ internal class Rook : Piece
 
     public static Rook CreateWhite() => new(Colour.White);
     public static Rook CreateBlack() => new(Colour.Black);
+
+    internal override IEnumerable<PotentialMove> GetPotentialMoves(Reference from, Board board)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 internal class Knight : Piece
@@ -43,6 +55,11 @@ internal class Knight : Piece
 
     public static Knight CreateWhite() => new(Colour.White);
     public static Knight CreateBlack() => new(Colour.Black);
+
+    internal override IEnumerable<PotentialMove> GetPotentialMoves(Reference from, Board board)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 internal class Bishop : Piece
@@ -54,6 +71,11 @@ internal class Bishop : Piece
 
     public static Bishop CreateWhite() => new(Colour.White);
     public static Bishop CreateBlack() => new(Colour.Black);
+
+    internal override IEnumerable<PotentialMove> GetPotentialMoves(Reference from, Board board)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 internal class Queen : Piece
@@ -65,6 +87,11 @@ internal class Queen : Piece
 
     public static Queen CreateWhite() => new(Colour.White);
     public static Queen CreateBlack() => new(Colour.Black);
+
+    internal override IEnumerable<PotentialMove> GetPotentialMoves(Reference from, Board board)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 internal class King : Piece
@@ -76,6 +103,11 @@ internal class King : Piece
 
     public static King CreateWhite() => new(Colour.White);
     public static King CreateBlack() => new(Colour.Black);
+
+    internal override IEnumerable<PotentialMove> GetPotentialMoves(Reference from, Board board)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 public enum Colour

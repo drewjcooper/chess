@@ -1,4 +1,5 @@
 ﻿using Drewsoft.Chess.Engine.Exceptions;
+using Drewsoft.Chess.Engine.MoveTypes;
 
 using FluentAssertions;
 
@@ -7,9 +8,9 @@ namespace Drewsoft.Chess.Engine;
 public class ReferenceTests
 {
     [Fact]
-    public void Reference_Default_Isa8()
+    public void Reference_Default_Isa1()
     {
-        var expected = Reference.Parse("a8");
+        var expected = Reference.Parse("a1");
 
         Reference sut = default;
 
@@ -127,5 +128,49 @@ public class ReferenceTests
         var result = sut.ToString();
 
         result.Should().Be(candidate.ToLower());
+    }
+
+    [Theory]
+    [InlineData("d4", 0, 1, "d5")]
+    [InlineData("d4", 1, 1, "e5")]
+    [InlineData("d4", 1, 0, "e4")]
+    [InlineData("d4", 1, -1, "e3")]
+    [InlineData("d4", 0, -1, "d3")]
+    [InlineData("d4", -1, -1, "c3")]
+    [InlineData("d4", -1, 0, "c4")]
+    [InlineData("d4", -1, 1, "c5")]
+    [InlineData("b7", -1, 1, "a8")]
+    [InlineData("g7", 1, 1, "h8")]
+    [InlineData("g2", 1, -1, "h1")]
+    [InlineData("b2", -1, -1, "a1")]
+    public void TryStep_ValidStep_ReturnsTrueAndNewReference(string from, int fileDelta, int rankDelta, string expected)
+    {
+        var fromReference = Reference.Parse(from);
+        var step = new Step(fileDelta, rankDelta);
+
+        var result = fromReference.TryStep(step, out var toReference);
+
+        result.Should().BeTrue();
+        toReference.ToString().Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData("a8", 0, 1)]
+    [InlineData("d8", 1, 1)]
+    [InlineData("h8", 1, 0)]
+    [InlineData("h4", 1, -1)]
+    [InlineData("h1", 0, -1)]
+    [InlineData("d1", -1, -1)]
+    [InlineData("a1", -1, 0)]
+    [InlineData("a4", -1, 1)]
+    public void TryStep_AtEdgeOfBoard_ReturnsFalseAndSameReference(string from, int fileDelta, int rankDelta)
+    {
+        var fromReference = Reference.Parse(from);
+        var step = new Step(fileDelta, rankDelta);
+
+        var result = fromReference.TryStep(step, out var toReference);
+
+        result.Should().BeFalse();
+        toReference.ToString().Should().Be(from);
     }
 }
